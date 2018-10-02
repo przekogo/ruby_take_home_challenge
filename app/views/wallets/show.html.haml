@@ -1,0 +1,52 @@
+- if user_signed_in?
+  = link_to('Logout', destroy_user_session_path, method: :delete, class: 'button--logout')
+- else
+  = link_to('Login', new_user_session_path, class: 'button--logout')
+%h3 Transactions for 0xec690940081e780ae3310c88eb3f4c75622988ec
+
+.row.stats
+  .column
+    %strong Summary:
+  .column
+    %strong
+      = @wallet.transactions
+    Transactions
+  .column
+    -# TODO: Remember to change currency symbol
+    %strong
+      = convert_currency(@wallet.balance, @currency[:multiplier])
+      = @currency[:symbol]
+    Balance
+
+%table
+  %thead
+    %tr
+      %th Details
+      %th Amount (ETH)
+      %th Fee (ETH)
+      %th Date
+  %tbody
+    - @transactions.each do |t|
+      %tr{class: @wallet.address == t[:from] ? 'transaction-incoming' : 'transaction-outcoming'}
+        %td
+          %i.fas{class: @wallet.address == t[:from] ? 'fa-arrow-up' : 'fa-arrow-down'}
+          Transfer
+          = @wallet.address == t[:from] ? "from #{t[:from]}" : "to #{t[:to]}"
+        %td
+          = convert_currency(t[:value], @currency[:multiplier])
+          = @currency[:symbol]
+        %td
+          = convert_currency(t[:fee], @currency[:multiplier])
+          = @currency[:symbol]
+        %td
+          = format_time(t[:timestamp])
+          ago
+= link_to "Change currency to #{@currency[:symbol]=='PLN' ? 'ETH' : 'PLN'}",
+          wallets_show_path(@wallet.id, currency: @currency[:symbol]=='PLN' ? 'ETH' : 'PLN'),
+          class: 'button'
+= link_to 'Back to your wallets', wallets_index_path
+|
+= link_to 'Remove wallet', wallets_index_path
+
+
+

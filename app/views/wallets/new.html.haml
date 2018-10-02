@@ -1,0 +1,8 @@
+.layout__content
+  %h2 Create wallet
+  = form_for :wallet do |w|
+    .field
+      %label Wallet address
+      %br/
+      = w.text_field :address
+      = w.submit 'Add Wallet', class: 'button'
